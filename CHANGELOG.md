@@ -4,7 +4,7 @@ Each meaningful change lists its implementation commit. Follow-up commits that s
 
 ## 2026-10-16 — Establish versioned baselines
 
-### Automatic GitHub synchronization — hash pending
+### Automatic GitHub synchronization — `dc22754`
 
 - Replaced the earlier opt-in push policy with standing authorization to push completed changes to `development` or task-specific feature branches after relevant verification.
 - Prohibited direct pushes to `main`/production branches, unapproved PR merges, force-pushes, remote branch deletion, and destructive recovery after failed pushes.
