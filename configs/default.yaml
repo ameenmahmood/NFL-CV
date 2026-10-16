@@ -9,6 +9,8 @@ device: auto
 # Maximum frame width; aspect ratio is preserved. YOLO inference side length.
 processing_width: 960
 imgsz: 640
+# NMS IoU controls duplicate suppression; lower values suppress more overlap.
+nms_iou: 0.7
 tracking:
   track_high_thresh: 0.25
   track_low_thresh: 0.1

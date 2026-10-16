@@ -26,7 +26,8 @@ class PersonDetector:
     def detect(self, image) -> list[Detection]:
         result = self.model.predict(image, classes=[0],
             conf=min(self.config.confidence, self.config.tracking.track_low_thresh),
-            device=self.device, imgsz=self.config.imgsz, verbose=False)[0]
+            device=self.device, imgsz=self.config.imgsz, iou=self.config.nms_iou,
+            verbose=False)[0]
         if result.boxes is None:
             return []
         return [Detection(tuple(map(float, box)), float(score), int(cls))

@@ -1,0 +1,23 @@
+# Accuracy-oriented CPU-compatible preset for 1080p All-22 footage.
+input_path: data/all22_test_HD.mp4
+output_path: outputs/all22_hd_annotated.mp4
+save_output: false
+display: true
+model: yolo11n.pt
+confidence: 0.25
+device: auto
+processing_width: 1920
+imgsz: 1280
+# Stricter suppression reduces duplicates but can suppress occluded neighbors.
+nms_iou: 0.45
+tracking:
+  track_high_thresh: 0.25
+  track_low_thresh: 0.1
+  new_track_thresh: 0.25
+  track_buffer: 30
+  match_thresh: 0.8
+  fuse_score: true
+cuts:
+  enabled: true
+  histogram_threshold: 0.65
+  pixel_threshold: 0.25

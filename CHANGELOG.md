@@ -4,12 +4,20 @@ Each meaningful change lists its implementation commit. Follow-up commits that s
 
 ## 2026-10-16 — Establish versioned baselines
 
-### HD detector benchmark — hash pending
+### HD detector benchmark — `2600d24`
 
 - Added a reproducible six-frame comparison of nano/small YOLO models, two input resolutions, and NMS thresholds on the supplied 1080p video.
 - Recorded visual findings and inference timings, explicitly distinguishing person counts from measured player accuracy.
 - Files: `scripts/benchmark_detection.py`, `docs/hd-validation.md`.
 - Verification: executed all 24 preset/frame combinations with local pretrained models; benchmark images and weights remain ignored.
+
+### HD detection preset and configurable suppression — hash pending
+
+- Added a CPU-compatible HD preset retaining 1080p frames with 1280-pixel inference and stricter configurable NMS to improve distant-person detections and reduce duplicate boxes.
+- Kept baseline resolution/suppression unchanged; preserved low-score candidates for ByteTrack.
+- Extended video validation to use YAML presets and arbitrary consecutive segments with output metadata and full-decode checks.
+- Files: `src/football_cv/config.py`, `src/football_cv/detection.py`, `configs/default.yaml`, `configs/all22_hd.yaml`, `scripts/validate_video.py`, `tests/test_detection.py`, `README.md`.
+- Verification: 32 tests passed including the local HD-video integration test. Real-video segment results are documented in `docs/hd-validation.md`.
 
 ### Automatic GitHub synchronization — `dc22754`
 

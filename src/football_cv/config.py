@@ -49,11 +49,15 @@ class Config:
     device: str = 'auto'
     processing_width: int = 960
     imgsz: int = 640
+    nms_iou: float = 0.7
     tracking: TrackingConfig = field(default_factory=TrackingConfig)
     cuts: CutConfig = field(default_factory=CutConfig)
 
     def __post_init__(self) -> None:
         probability(self.confidence, 'confidence')
+        probability(self.nms_iou, 'nms_iou')
+        if self.nms_iou == 0:
+            raise ValueError('nms_iou must be greater than 0')
         for name in ('input_path', 'output_path', 'model', 'device'):
             if not isinstance(getattr(self, name), str) or not getattr(self, name).strip():
                 raise ValueError(f'{name} must be a nonempty string')

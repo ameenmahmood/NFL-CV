@@ -28,6 +28,15 @@ python -m football_cv --input "C:\Videos\football.mp4" --output outputs\batch.mp
 python -m football_cv --config configs\default.yaml
 ```
 
+For HD All-22 footage, use the validated higher-resolution preset:
+
+```powershell
+python -m football_cv --config configs\all22_hd.yaml --input "data\all22_test_HD.mp4"
+python -m football_cv --config configs\all22_hd.yaml --input "data\all22_test_HD.mp4" --output outputs\hd_annotated.mp4 --no-display
+```
+
+This preserves up to 1920-pixel frame width, runs YOLO11 nano at inference size 1280, and uses NMS IoU 0.45 to suppress more duplicate boxes. It improves distant-person detection in inspected HD samples, with a substantial CPU speed cost. It still detects officials and sideline personnel and can miss or merge overlapping players. Lower `nms_iou` suppresses more overlap but can remove distinct neighboring players; the baseline retains 0.70. See [HD validation findings](docs/hd-validation.md) for the comparison rather than interpreting detection counts as player accuracy.
+
 First execution of `yolo11n.pt` may download pretrained weights and requires internet. For offline use configure `model` with the path to a trusted local COCO detection `.pt` file. Output must be a new MP4 path; existing files are refused. A partial output is finalized if interrupted or decoding fails. MP4 output contains video only, no original audio, at the source nominal FPS. No frames are intentionally skipped; pause does not duplicate saved frames. Variable-frame-rate input is written at constant nominal FPS.
 
 Space or **P** pauses/resumes; **Q** or Escape quits; **R** resets tracking identities manually after an unrelated scene. Closing the window quits. Headless mode runs until EOF or Ctrl+C. Display runs at processing speed rather than pacing to source FPS. The rolling processing FPS measures decode, detection, tracking, and scene analysis, excluding annotation, output encoding, display waits, and pauses.
@@ -69,6 +78,16 @@ python -m pytest -q -m integration
 Normal tests do not download weights or require a GPU. They test real OpenCV synthetic MP4 encoding/decoding, configuration errors, decode failures, scene changes, and actual ByteTrack recovery/reset using synthetic detections. The integration smoke test runs three frames with supplied local weights and video; it validates API operation, not football detection accuracy. Assess accuracy on labeled football clips separately.
 
 Development verification: 22 tests passed and the optional integration test skipped because no video/weights were supplied. Tested locally on Windows with the available Python 3.12.14 runtime, PyTorch 2.14.1, OpenCV 4.14.0, and Ultralytics 8.4.177. Python 3.11 remains the installation target but was not available for this verification. GUI playback, pretrained inference on football footage, and GPU throughput remain unverified.
+
+Subsequent validation used local football footage and pretrained weights, including the new HD file: 32 tests passed on October 16. GUI playback and GPU performance remain unverified. Detector boundary tests check that configured NMS is applied, non-person classes are excluded, and low-confidence candidates remain available to ByteTrack.
+
+For reproducible real-video checks (use a new output directory):
+
+```powershell
+python scripts\validate_video.py data\all22_test_HD.mp4 --config configs\all22_hd.yaml --starts 543 2174 7611 --segment-frames 90 --output outputs\hd_validation_new
+```
+
+This decodes the entire file, then runs consecutive tracking segments using the selected preset, saving annotated clips, snapshots, and a JSON report. It tests API and codec behavior, not labeled detection accuracy. `scripts/benchmark_detection.py` compares model/resolution/NMS combinations on identical frames.
 
 ## Limitations and roadmap
 

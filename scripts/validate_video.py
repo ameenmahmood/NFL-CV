@@ -7,7 +7,7 @@ from time import perf_counter
 import cv2
 import numpy as np
 
-from football_cv.config import Config
+from football_cv.config import Config, load_config
 from football_cv.detection import PersonDetector
 from football_cv.scenes import CutDetector
 from football_cv.tracking import PersonTracker
@@ -20,9 +20,14 @@ def main():
     parser = argparse.ArgumentParser()
     parser.add_argument('video')
     parser.add_argument('--output', default='outputs/all22_validation')
+    parser.add_argument('--config', help='Detector/tracker YAML preset; defaults to CPU baseline')
+    parser.add_argument('--starts', nargs='+', type=int, help='Segment start frame indices')
+    parser.add_argument('--segment-frames', type=int, default=150)
     args = parser.parse_args()
     output = Path(args.output)
-    output.mkdir(parents=True, exist_ok=True)
+    if args.segment_frames < 1 or (args.starts and min(args.starts) < 0):
+        parser.error('Segment length must be positive and start indices nonnegative')
+    output.mkdir(parents=True, exist_ok=False)
     cap = cv2.VideoCapture(args.video)
     if not cap.isOpened():
         raise ValueError('Cannot open video')
@@ -35,14 +40,22 @@ def main():
             break
         count += 1
     cap.release()
+    if fps <= 0 or count == 0 or count != expected:
+        raise ValueError(f'Invalid or incomplete video: decoded {count}/{expected} frames, FPS={fps}')
+    starts = args.starts if args.starts is not None else [0, count // 2, max(0, count - args.segment_frames)]
+    if any(start >= count for start in starts) or len(set(starts)) != len(starts):
+        raise ValueError('Segment starts must be unique and within the video')
+    config = load_config(args.config) if args.config else Config(device='cpu', display=False)
     report = {'source': args.video, 'fps': fps, 'source_size': [width, height],
-              'reported_frames': expected, 'decoded_frames': count, 'segments': []}
+              'reported_frames': expected, 'decoded_frames': count,
+              'model': config.model, 'imgsz': config.imgsz, 'processing_width': config.processing_width,
+              'nms_iou': config.nms_iou, 'segments': []}
     print(f'Decoded {count}/{expected} frames ({count / fps:.2f}s)', flush=True)
-    config = Config(input_path=args.video, device='cpu', display=False)
     detector = PersonDetector(config)
+    report['device'] = detector.device
     samples = []
     # Each segment is consecutive; fresh tracker state prevents linking across seeks.
-    for start in (0, count // 2, max(0, count - 150)):
+    for start in starts:
         cap = cv2.VideoCapture(args.video)
         cap.set(cv2.CAP_PROP_POS_FRAMES, start)
         tracker = PersonTracker(config.tracking, fps)
@@ -51,13 +64,15 @@ def main():
         visible, tracked, resets = [], [], []
         elapsed = []
         try:
-            for offset in range(min(150, count - start)):
+            segment_length = min(args.segment_frames, count - start)
+            for offset in range(segment_length):
                 tick = perf_counter()
                 ok, image = cap.read()
                 if not ok:
                     raise ValueError(f'Decode failed in segment at {start + offset}')
                 h, w = image.shape[:2]
-                image = cv2.resize(image, (960, round(h * 960 / w)), interpolation=cv2.INTER_AREA)
+                if w > config.processing_width:
+                    image = cv2.resize(image, (config.processing_width, max(1, round(h * config.processing_width / w))), interpolation=cv2.INTER_AREA)
                 frame = Frame(start + offset, cap.get(cv2.CAP_PROP_POS_MSEC) / 1000, image, (w, h))
                 if cuts.update(image):
                     tracker.reset()
@@ -69,9 +84,9 @@ def main():
                 tracked.append(sum(d.track_id is not None for d in shown))
                 annotated = annotate(frame, people, 1 / elapsed[-1], config.confidence)
                 if sink is None:
-                    sink = VideoSink(str(output / f'segment_{start}.mp4'), fps, (960, image.shape[0]))
+                    sink = VideoSink(str(output / f'segment_{start}.mp4'), fps, (image.shape[1], image.shape[0]))
                 sink.write(annotated)
-                if offset in (0, 75, 149):
+                if offset in {0, segment_length // 2, segment_length - 1}:
                     cv2.imwrite(str(output / f'frame_{frame.index}.jpg'), annotated)
                     samples.append(cv2.resize(annotated, (640, 360)))
         finally:
@@ -85,6 +100,8 @@ def main():
         report['segments'].append(stats)
         print(json.dumps(stats), flush=True)
     if samples:
+        while len(samples) % 3:
+            samples.append(np.zeros_like(samples[-1]))
         cv2.imwrite(str(output / 'contact_sheet.jpg'), np.vstack([np.hstack(samples[i:i+3]) for i in range(0, len(samples), 3)]))
     (output / 'report.json').write_text(json.dumps(report, indent=2), encoding='utf-8')
 
