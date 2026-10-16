@@ -1,0 +1,23 @@
+# Paths are relative to the working directory, not this YAML file.
+input_path: data/test.mp4
+output_path: outputs/annotated.mp4
+save_output: false
+display: true
+model: yolo11n.pt
+confidence: 0.25
+device: auto
+# Maximum frame width; aspect ratio is preserved. YOLO inference side length.
+processing_width: 960
+imgsz: 640
+tracking:
+  track_high_thresh: 0.25
+  track_low_thresh: 0.1
+  new_track_thresh: 0.25
+  track_buffer: 30
+  match_thresh: 0.8
+  fuse_score: true
+# Both histogram distance and pixel change must exceed these thresholds.
+cuts:
+  enabled: true
+  histogram_threshold: 0.65
+  pixel_threshold: 0.25

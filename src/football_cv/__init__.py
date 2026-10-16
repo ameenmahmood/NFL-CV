@@ -1,0 +1,1 @@
+"""Football computer vision baseline."""
