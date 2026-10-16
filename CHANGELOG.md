@@ -4,6 +4,14 @@ Each meaningful change lists its implementation commit. Follow-up commits that s
 
 ## 2026-10-16 — Establish versioned baselines
 
+### Automatic GitHub synchronization — hash pending
+
+- Replaced the earlier opt-in push policy with standing authorization to push completed changes to `development` or task-specific feature branches after relevant verification.
+- Prohibited direct pushes to `main`/production branches, unapproved PR merges, force-pushes, remote branch deletion, and destructive recovery after failed pushes.
+- Files: `AGENTS.md`, `CHANGELOG.md`.
+- Created local `development` branch. No remote is configured, and GitHub CLI is not currently available on PATH; synchronization awaits repository/authentication setup.
+- Verification: reviewed documentation diff and Git status; no application behavior changed, so existing test results apply.
+
 ### Milestone 1 baseline — `07b28ef`
 
 - Retrospectively committed the implementation developed October 13, preserving the existing files without resetting or discarding work.
