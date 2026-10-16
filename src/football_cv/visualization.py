@@ -1,14 +1,18 @@
+"""Render person observations and processing metadata without changing input pixels."""
 import cv2
 from .types import Frame, Detection
 
 def annotate(frame: Frame, detections: list[Detection], fps: float, threshold: float):
+    """Draw only display-qualified observations; confidence is not formation certainty."""
     image = frame.image.copy()
     for d in detections:
+        # Low-score observations may aid tracking without cluttering the overlay.
         if d.confidence < threshold:
             continue
         x1, y1, x2, y2 = map(round, d.bbox)
         label = f'person {d.confidence:.2f}'
         if d.track_id is not None:
+            # Numeric track IDs can recur after scene resets.
             label = f'{d.scene_id}:{d.track_id} ' + label
         else:
             label = 'untracked ' + label

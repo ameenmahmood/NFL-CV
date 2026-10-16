@@ -20,21 +20,26 @@ detector = PersonDetector(Config(input_path=args.video, device='cpu'))
 cap = cv2.VideoCapture(args.video)
 comparisons, rows = [], []
 try:
+    # Legacy comparison for the original 1080p/30 FPS clip; indices are clip-specific.
+    # Use benchmark_detection.py for relative sampling of other recordings.
     for index in (0, 2657, 5090):
         cap.set(cv2.CAP_PROP_POS_FRAMES, index)
         ok, original = cap.read()
         if not ok:
             raise ValueError(f'Cannot decode frame {index}')
         row = []
+        # Decode once so both resolutions represent the same instant and people.
         for width, imgsz in ((960, 640), (1920, 1280)):
             detector.config.imgsz = imgsz
             image = cv2.resize(original, (width, round(original.shape[0] * width / original.shape[1])))
             start = perf_counter()
             detections = detector.detect(image)
+            # Unlike benchmark_detection.py, this includes first-inference warmup.
             seconds = perf_counter() - start
             shown = sum(d.confidence >= .25 for d in detections)
             comparisons.append({'frame': index, 'processing_width': width, 'imgsz': imgsz,
                                 'detections_at_025': shown, 'inference_seconds': seconds})
+            # Timestamp/source dimensions below assume the original validation clip.
             annotated = annotate(Frame(index, index / 30, image, (1920, 1080)), detections, 1 / seconds, .25)
             cv2.imwrite(str(output / f'comparison_{index}_{imgsz}.jpg'), annotated)
             preview = cv2.resize(annotated, (960, 540))
@@ -43,6 +48,7 @@ try:
         rows.append(np.hstack(row))
 finally:
     cap.release()
+# Rows compare low/high resolution side by side; these snapshots have no tracking.
 cv2.imwrite(str(output / 'resolution_comparison.jpg'), np.vstack(rows))
 (output / 'resolution_comparison.json').write_text(json.dumps(comparisons, indent=2))
 print(json.dumps(comparisons, indent=2))

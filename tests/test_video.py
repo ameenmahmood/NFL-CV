@@ -1,3 +1,4 @@
+"""Exercise real MP4 codecs for timing and mock capture for deterministic failures."""
 from unittest.mock import patch
 import cv2
 import numpy as np
@@ -9,6 +10,7 @@ def test_missing(tmp_path):
         VideoReader(str(tmp_path / 'absent.mp4'), 64)
 
 def test_synthetic_roundtrip(tmp_path):
+    # Distinct constant frames provide a tiny, redistributable video with known timing.
     path = tmp_path / 'test.mp4'
     sink = VideoSink(str(path), 10, (128, 64))
     for i in range(5):
@@ -35,6 +37,7 @@ def test_corrupt(tmp_path):
         VideoReader(str(path), 64)
 
 def test_decode_failure_and_release(tmp_path):
+    # A mocked backend distinguishes zero decoded frames from an early mid-file failure.
     path = tmp_path / 'test.mp4'
     path.touch()
     with patch('football_cv.video.cv2.VideoCapture') as factory:

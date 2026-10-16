@@ -16,6 +16,7 @@ from football_cv.visualization import annotate
 
 
 def main() -> None:
+    """Save comparable detections and timings for six shared frames and four presets."""
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument('video')
     parser.add_argument('--output', required=True)
@@ -26,6 +27,7 @@ def main() -> None:
     if not cap.isOpened():
         raise ValueError(f'Cannot open {args.video}')
     total, fps = int(cap.get(7)), cap.get(5)
+    # Sample across the recording; every preset reuses exactly these decoded images.
     indices = [int(total * f) for f in (.05, .2, .35, .5, .7, .9)]
     frames = []
     try:
@@ -38,6 +40,7 @@ def main() -> None:
     finally:
         cap.release()
     records = []
+    # Vary resolution, then suppression, then model size to expose each tradeoff.
     for model_name, width, imgsz, iou in (
         ('yolo11n.pt', 960, 640, .7),
         ('yolo11n.pt', 1920, 1280, .7),
@@ -54,6 +57,7 @@ def main() -> None:
             tick = perf_counter()
             result = model.predict(image, classes=[0], conf=.1, imgsz=imgsz,
                                    iou=iou, device='cpu', verbose=False)[0]
+            # This benchmark excludes decode, annotation, tracking, and file output.
             seconds = perf_counter() - tick
             detections = [Detection(tuple(map(float, b)), float(s)) for b, s in
                           zip(result.boxes.xyxy.cpu().numpy(), result.boxes.conf.cpu().numpy())]
@@ -61,6 +65,7 @@ def main() -> None:
             annotated = annotate(frame, detections, 1 / seconds, .25)
             if not cv2.imwrite(str(output / f'{label}_frame{index}.jpg'), annotated):
                 raise OSError('Could not save annotated comparison')
+            # Keep boxes for later review; more person boxes do not establish recall.
             record = {'preset': label, 'frame': index, 'seconds': seconds,
                       'count_at_025': sum(d.confidence >= .25 for d in detections),
                       'detections': [asdict(d) for d in detections]}

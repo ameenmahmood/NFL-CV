@@ -1,3 +1,4 @@
+"""CLI and sequential pipeline orchestration; component logic lives in adapters."""
 import argparse
 import logging
 from pathlib import Path
@@ -14,6 +15,7 @@ from .visualization import annotate
 log = logging.getLogger(__name__)
 
 def run(config) -> int:
+    """Process frames until EOF/quit and always release capture, writer, and windows."""
     if config.save_output and Path(config.output_path).exists():
         raise ValueError(f'Output already exists; choose a new path: {config.output_path}')
     reader = VideoReader(config.input_path, config.processing_width)
@@ -27,6 +29,7 @@ def run(config) -> int:
         paused = False
         while True:
             if paused:
+                # Keep window events responsive without advancing capture or output.
                 key = cv2.waitKey(50) & 0xFF
                 if key in (ord('q'), 27):
                     break
@@ -42,13 +45,16 @@ def run(config) -> int:
             if frame is None:
                 break
             if cuts.update(frame.image):
+                # Clear old identities before associating observations in the new view.
                 tracker.reset()
                 log.info('Scene reset at frame %d', frame.index)
             detections = tracker.update(detector.detect(frame.image), frame.image)
+            # Measure decode/inference/tracking, excluding rendering and UI waits.
             fps = meter.update(perf_counter() - start)
             image = annotate(frame, detections, fps, config.confidence)
             if config.save_output:
                 if sink is None:
+                    # Actual processed dimensions are only known after the first read.
                     sink = VideoSink(config.output_path, reader.fps, (image.shape[1], image.shape[0]))
                 sink.write(image)
             processed += 1
@@ -67,6 +73,7 @@ def run(config) -> int:
         log.info('Processed %d frames', processed)
         return processed
     finally:
+        # Also runs after model initialization, decode, or inference errors.
         reader.close()
         if sink is not None:
             sink.close()
@@ -74,6 +81,7 @@ def run(config) -> int:
             cv2.destroyAllWindows()
 
 def main() -> int:
+    """Apply CLI overrides to YAML and translate expected failures to exit codes."""
     parser = argparse.ArgumentParser(description='Football person detection and ByteTrack tracking')
     parser.add_argument('--config', default='configs/default.yaml')
     parser.add_argument('--input')
@@ -92,6 +100,7 @@ def main() -> int:
             config.device = args.device
         if args.no_display:
             config.display = False
+        # CLI overrides may invalidate settings that were valid when YAML was loaded.
         config.__post_init__()
         run(config)
         return 0

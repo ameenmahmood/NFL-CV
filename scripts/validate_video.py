@@ -17,6 +17,7 @@ from football_cv.visualization import annotate
 
 
 def main():
+    """Check full-file decoding, then measure bounded consecutive tracking segments."""
     parser = argparse.ArgumentParser()
     parser.add_argument('video')
     parser.add_argument('--output', default='outputs/all22_validation')
@@ -27,6 +28,7 @@ def main():
     output = Path(args.output)
     if args.segment_frames < 1 or (args.starts and min(args.starts) < 0):
         parser.error('Segment length must be positive and start indices nonnegative')
+    # Refuse reuse so clips and measurements from different runs cannot be mixed.
     output.mkdir(parents=True, exist_ok=False)
     cap = cv2.VideoCapture(args.video)
     if not cap.isOpened():
@@ -34,6 +36,7 @@ def main():
     fps, expected = cap.get(cv2.CAP_PROP_FPS), int(cap.get(cv2.CAP_PROP_FRAME_COUNT))
     width, height = int(cap.get(3)), int(cap.get(4))
     count = 0
+    # Metadata alone cannot reveal corruption later in the file; decode every frame.
     while True:
         ok, _ = cap.read()
         if not ok:
@@ -45,6 +48,7 @@ def main():
     starts = args.starts if args.starts is not None else [0, count // 2, max(0, count - args.segment_frames)]
     if any(start >= count for start in starts) or len(set(starts)) != len(starts):
         raise ValueError('Segment starts must be unique and within the video')
+    # This script controls capture/output itself; YAML supplies inference/tracking settings.
     config = load_config(args.config) if args.config else Config(device='cpu', display=False)
     report = {'source': args.video, 'fps': fps, 'source_size': [width, height],
               'reported_frames': expected, 'decoded_frames': count,
@@ -78,9 +82,11 @@ def main():
                     tracker.reset()
                     resets.append(frame.index)
                 people = tracker.update(detector.detect(image), image)
+                # Match the application's processing-only timing, before annotation/output.
                 elapsed.append(perf_counter() - tick)
                 shown = [d for d in people if d.confidence >= config.confidence]
                 visible.append(len(shown))
+                # This counts assigned IDs, not whether identity assignments are correct.
                 tracked.append(sum(d.track_id is not None for d in shown))
                 annotated = annotate(frame, people, 1 / elapsed[-1], config.confidence)
                 if sink is None:
@@ -100,6 +106,7 @@ def main():
         report['segments'].append(stats)
         print(json.dumps(stats), flush=True)
     if samples:
+        # Pad incomplete rows so horizontal stacks always have equal widths.
         while len(samples) % 3:
             samples.append(np.zeros_like(samples[-1]))
         cv2.imwrite(str(output / 'contact_sheet.jpg'), np.vstack([np.hstack(samples[i:i+3]) for i in range(0, len(samples), 3)]))

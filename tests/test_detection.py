@@ -22,6 +22,7 @@ def test_invalid_suppression(value):
 
 
 def test_detection_preserves_tracking_candidates_and_filters_nonpeople():
+    # Bypass weight-loading initialization; only the model adapter is under test here.
     detector = PersonDetector.__new__(PersonDetector)
     detector.config = Config(imgsz=1280, nms_iou=.45)
     detector.device = 'cpu'
@@ -43,6 +44,7 @@ def test_detection_preserves_tracking_candidates_and_filters_nonpeople():
 
 
 def test_no_detection_boxes():
+    # Ultralytics may return a result object without a Boxes payload.
     detector = PersonDetector.__new__(PersonDetector)
     detector.config, detector.device, detector.model = Config(), 'cpu', MagicMock()
     detector.model.predict.return_value = [MagicMock(boxes=None)]

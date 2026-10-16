@@ -4,6 +4,13 @@ Each meaningful change lists its implementation commit. Follow-up commits that s
 
 ## 2026-10-16 — Establish versioned baselines
 
+### Relevant code comments and persistent documentation standard — hash pending
+
+- Added comments/docstrings throughout source modules, validation scripts, and tests explaining data units, external API layouts, timing, tracking, cleanup, benchmark assumptions, and fixture intent.
+- Recorded the requirement to maintain relevant comments for all future code in `AGENTS.md`.
+- Files: `src/football_cv/*.py`, `scripts/*.py`, `tests/*.py`, `AGENTS.md`, `CHANGELOG.md`.
+- Verification: executable ASTs matched HEAD across all 19 edited Python files after removing docstrings; 32 tests passed, including the local HD-video integration test. Git whitespace checks passed. Runtime logic is unchanged.
+
 ### HD detector benchmark — `2600d24`
 
 - Added a reproducible six-frame comparison of nano/small YOLO models, two input resolutions, and NMS thresholds on the supplied 1080p video.

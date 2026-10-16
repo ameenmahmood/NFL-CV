@@ -22,6 +22,13 @@
 
 Prioritize reliable football person detection/tracking and future normalized field coordinates. Do not add formation classification until detection, tracking, team identification, and coordinate mapping are validated. Do not fabricate formations or confidence scores.
 
+## Code comments — required for existing and future code
+
+- Add and maintain relevant comments and docstrings whenever writing or modifying code. Explain component responsibilities, data formats/units, non-obvious logic, assumptions, tradeoffs, and external API contracts.
+- Document public classes/functions where their purpose or behavior needs explanation. In tests, explain unusual fixtures, mock boundaries, and the regression being protected.
+- Favor concise explanations of why over comments that merely repeat the code. Keep comments accurate when behavior changes; do not claim unverified accuracy or features.
+- Apply this standard to source modules, diagnostic scripts, tests, and configuration. Review nearby comments as part of each future change.
+
 ## Verification
 
 Run `.\.venv\Scripts\python.exe -m pytest -q` when relevant. Tests without supplied video/model environment variables should pass without downloading weights or requiring a GPU. The optional integration test uses `FOOTBALL_TEST_VIDEO` and `FOOTBALL_TEST_MODEL`. See README.md for setup and commands.

@@ -1,14 +1,17 @@
+"""Load strict YAML settings without importing the model or video pipeline."""
 from dataclasses import dataclass, field, fields
 from pathlib import Path
 import math
 import yaml
 
 def probability(value: float, name: str) -> None:
+    """Reject invalid thresholds, including bool (an int subclass) and NaN."""
     if isinstance(value, bool) or not isinstance(value, (int, float)) or not math.isfinite(value) or not 0 <= value <= 1:
         raise ValueError(f"{name} must be a finite number between 0 and 1")
 
 @dataclass
 class TrackingConfig:
+    """ByteTrack association settings; buffer is expressed in frames at 30 FPS."""
     track_high_thresh: float = 0.25
     track_low_thresh: float = 0.1
     new_track_thresh: float = 0.25
@@ -19,6 +22,7 @@ class TrackingConfig:
     def __post_init__(self) -> None:
         for name in ('track_high_thresh', 'track_low_thresh', 'new_track_thresh', 'match_thresh'):
             probability(getattr(self, name), name)
+        # Recovery may use weak detections; starting an identity needs a stronger one.
         if not 0 < self.track_low_thresh < self.track_high_thresh <= self.new_track_thresh:
             raise ValueError('Require 0 < low < high <= new track thresholds')
         if type(self.track_buffer) is not int or self.track_buffer < 1:
@@ -28,6 +32,7 @@ class TrackingConfig:
 
 @dataclass
 class CutConfig:
+    """Independent histogram and pixel-change gates for the hard-cut heuristic."""
     enabled: bool = True
     histogram_threshold: float = 0.65
     pixel_threshold: float = 0.25
@@ -40,6 +45,7 @@ class CutConfig:
 
 @dataclass
 class Config:
+    """Runtime settings; relative paths resolve against the working directory."""
     input_path: str = 'data/test.mp4'
     output_path: str = 'outputs/annotated.mp4'
     save_output: bool = False
@@ -50,6 +56,7 @@ class Config:
     processing_width: int = 960
     imgsz: int = 640
     nms_iou: float = 0.7
+    # Each Config owns its nested settings; instances must not share mutable state.
     tracking: TrackingConfig = field(default_factory=TrackingConfig)
     cuts: CutConfig = field(default_factory=CutConfig)
 
@@ -73,6 +80,7 @@ class Config:
             raise ValueError('Output must have .mp4 extension')
 
 def construct(cls, data):
+    """Reject misspelled YAML keys instead of silently applying default values."""
     if not isinstance(data, dict):
         raise ValueError(f'{cls.__name__} must be a YAML mapping')
     unknown = set(data) - {f.name for f in fields(cls)}
@@ -81,6 +89,7 @@ def construct(cls, data):
     return cls(**data)
 
 def load_config(path: str | Path) -> Config:
+    """Parse safe YAML and validate nested settings before building the root config."""
     try:
         data = yaml.safe_load(Path(path).read_text(encoding='utf-8'))
     except (OSError, yaml.YAMLError) as exc:

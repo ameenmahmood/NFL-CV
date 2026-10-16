@@ -1,3 +1,4 @@
+"""Configuration failures must be detected before video or model initialization."""
 import pytest
 from football_cv.config import Config, TrackingConfig, load_config
 
@@ -11,6 +12,7 @@ def test_invalid(kwargs):
 
 @pytest.mark.parametrize('text', ['[]', 'unknown: 1', 'tracking: []', 'display: nope', 'a: ['])
 def test_bad_yaml(tmp_path, text):
+    # Exercise malformed input and unknown/nested keys through the real YAML loader.
     path = tmp_path / 'config.yaml'
     path.write_text(text)
     with pytest.raises(ValueError):

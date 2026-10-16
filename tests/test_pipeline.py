@@ -1,3 +1,4 @@
+"""Check orchestration/resource ownership without loading weights or opening a GUI."""
 from unittest.mock import patch, MagicMock
 import numpy as np
 import pytest
@@ -8,6 +9,7 @@ from football_cv.types import Frame
 from football_cv.performance import PerformanceMeter
 
 def test_device_selection():
+    # Mock CUDA capabilities so CPU-only machines cover both hardware selection paths.
     with patch('torch.cuda.is_available', return_value=False):
         assert resolve_device('auto') == 'cpu'
         assert resolve_device('cpu') == 'cpu'
@@ -20,6 +22,7 @@ def test_device_selection():
         resolve_device('bogus')
 
 def test_headless_pipeline_cleanup():
+    # One frame followed by EOF must yield one output write and release both resources.
     frame = Frame(0, 0, np.zeros((64, 64, 3), dtype=np.uint8), (64, 64))
     with patch('football_cv.app.VideoReader') as reader, patch('football_cv.app.PersonDetector') as detector, patch('football_cv.app.PersonTracker') as tracker, patch('football_cv.app.VideoSink') as sink:
         reader.return_value.fps = 30
@@ -32,12 +35,14 @@ def test_headless_pipeline_cleanup():
         reader.return_value.close.assert_called_once()
 
 def test_initialization_failure_cleanup():
+    # Capture is already open when model loading fails, so the finally block must close it.
     with patch('football_cv.app.VideoReader') as reader, patch('football_cv.app.PersonDetector', side_effect=RuntimeError('model failed')):
         with pytest.raises(RuntimeError):
             run(Config(display=False))
         reader.return_value.close.assert_called_once()
 
 def test_meter():
+    # A two-frame window evicts old durations rather than averaging individual FPS values.
     meter = PerformanceMeter(2)
     assert meter.update(.1) == pytest.approx(10)
     assert meter.update(.3) == pytest.approx(5)

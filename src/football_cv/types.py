@@ -5,6 +5,7 @@ from numpy.typing import NDArray
 
 @dataclass(frozen=True)
 class Frame:
+    """Zero-based source index, seconds, BGR pixels, and source (width, height)."""
     index: int
     timestamp: float
     image: NDArray[np.uint8]
@@ -12,6 +13,7 @@ class Frame:
 
 @dataclass(frozen=True)
 class Detection:
+    """An xyxy pixel box and person score, with an optional scene-scoped track ID."""
     bbox: tuple[float, float, float, float]
     confidence: float
     class_id: int = 0
