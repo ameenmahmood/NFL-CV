@@ -4,7 +4,7 @@ Each meaningful change lists its implementation commit. Follow-up commits that s
 
 ## 2026-10-16 — Establish versioned baselines
 
-### Relevant code comments and persistent documentation standard — hash pending
+### Relevant code comments and persistent documentation standard — `8d357ab`
 
 - Added comments/docstrings throughout source modules, validation scripts, and tests explaining data units, external API layouts, timing, tracking, cleanup, benchmark assumptions, and fixture intent.
 - Recorded the requirement to maintain relevant comments for all future code in `AGENTS.md`.
