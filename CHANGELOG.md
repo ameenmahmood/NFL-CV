@@ -4,6 +4,13 @@ Each meaningful change lists its implementation commit. Follow-up commits that s
 
 ## 2026-10-16 — Establish versioned baselines
 
+### HD detector benchmark — hash pending
+
+- Added a reproducible six-frame comparison of nano/small YOLO models, two input resolutions, and NMS thresholds on the supplied 1080p video.
+- Recorded visual findings and inference timings, explicitly distinguishing person counts from measured player accuracy.
+- Files: `scripts/benchmark_detection.py`, `docs/hd-validation.md`.
+- Verification: executed all 24 preset/frame combinations with local pretrained models; benchmark images and weights remain ignored.
+
 ### Automatic GitHub synchronization — `dc22754`
 
 - Replaced the earlier opt-in push policy with standing authorization to push completed changes to `development` or task-specific feature branches after relevant verification.
