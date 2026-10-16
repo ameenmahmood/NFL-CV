@@ -11,7 +11,7 @@ Each meaningful change lists its implementation commit. Follow-up commits that s
 - Files: `scripts/benchmark_detection.py`, `docs/hd-validation.md`.
 - Verification: executed all 24 preset/frame combinations with local pretrained models; benchmark images and weights remain ignored.
 
-### HD detection preset and configurable suppression — hash pending
+### HD detection preset and configurable suppression — `8c0b746`
 
 - Added a CPU-compatible HD preset retaining 1080p frames with 1280-pixel inference and stricter configurable NMS to improve distant-person detections and reduce duplicate boxes.
 - Kept baseline resolution/suppression unchanged; preserved low-score candidates for ByteTrack.
