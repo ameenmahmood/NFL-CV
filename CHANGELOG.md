@@ -4,7 +4,7 @@ Each meaningful change lists its implementation commit. Follow-up commits that s
 
 ## 2026-10-21
 
-### Clean source review and candidate frame preparation — hash pending
+### Clean source review and candidate frame preparation — `547fe57`
 
 - Confirmed the user-supplied clean counterpart, decoded all 272 frames, and documented differing lengths and approximate frame correspondence.
 - Added a commented diagnostic script exporting clean/labeled reference images and candidate match metadata, explicitly requiring review and never transferring annotation boxes automatically.
