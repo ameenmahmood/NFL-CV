@@ -4,6 +4,13 @@ Each meaningful change lists its implementation commit. Follow-up commits that s
 
 ## 2026-10-21
 
+### Clean source review and candidate frame preparation — hash pending
+
+- Confirmed the user-supplied clean counterpart, decoded all 272 frames, and documented differing lengths and approximate frame correspondence.
+- Added a commented diagnostic script exporting clean/labeled reference images and candidate match metadata, explicitly requiring review and never transferring annotation boxes automatically.
+- Files: `scripts/prepare_frame_pairs.py`, `tests/test_frame_pairs.py`, `docs/labeling-guide.md`, `CHANGELOG.md`.
+- Verification: six reference pairs exported and representative pairs visually inspected; 33 tests passed, 1 optional integration test skipped. The HD detector/tracker processed all 272 clean frames, and its 1080p annotated output reopened and a middle frame decoded successfully.
+
 ### Labeled player groups and first reference review — `a690e5f`
 
 - Recorded blue D, green L, purple L, red O, and yellow Q role groups and the priority on corners, safeties, and linebackers.
