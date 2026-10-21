@@ -4,7 +4,7 @@ Each meaningful change lists its implementation commit. Follow-up commits that s
 
 ## 2026-10-21
 
-### Labeled player groups and first reference review — hash pending
+### Labeled player groups and first reference review — `a690e5f`
 
 - Recorded blue D, green L, purple L, red O, and yellow Q role groups and the priority on corners, safeties, and linebackers.
 - Reviewed the provided labeled video, documented burned-in label limitations, and outlined transfer to matching clean source frames with manually reviewed boxes.
