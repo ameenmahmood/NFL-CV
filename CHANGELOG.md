@@ -2,6 +2,15 @@
 
 Each meaningful change lists its implementation commit. Follow-up commits that synchronize these hashes are available through `git log -- CHANGELOG.md`; they do not reference their own hashes.
 
+## 2026-10-21
+
+### Labeled player groups and first reference review — hash pending
+
+- Recorded blue D, green L, purple L, red O, and yellow Q role groups and the priority on corners, safeties, and linebackers.
+- Reviewed the provided labeled video, documented burned-in label limitations, and outlined transfer to matching clean source frames with manually reviewed boxes.
+- Files: `docs/labeling-guide.md`, `AGENTS.md`, `CHANGELOG.md`.
+- Verification: all 324 frames decoded; six snapshots visually inspected. No application logic changed and no detector accuracy/training claims were made. Clean source/time correspondence is awaiting confirmation.
+
 ## 2026-10-16 — Establish versioned baselines
 
 ### Relevant code comments and persistent documentation standard — `8d357ab`

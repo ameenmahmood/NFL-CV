@@ -22,6 +22,8 @@
 
 Prioritize reliable football person detection/tracking and future normalized field coordinates. Do not add formation classification until detection, tracking, team identification, and coordinate mapping are validated. Do not fabricate formations or confidence scores.
 
+Corners, safeties, and linebackers are the main defensive evaluation priority; defensive linemen provide supporting context. Follow `docs/labeling-guide.md` for the user's five color/letter groups. Treat burned-in labels as a role reference, not player bounding boxes or clean detector training/evaluation input.
+
 ## Code comments — required for existing and future code
 
 - Add and maintain relevant comments and docstrings whenever writing or modifying code. Explain component responsibilities, data formats/units, non-obvious logic, assumptions, tradeoffs, and external API contracts.
