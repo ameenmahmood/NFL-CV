@@ -1,0 +1,39 @@
+{
+  "version": 1,
+  "video": "Unlabeled set 1.mp4",
+  "video_sha256": "50ef3d085e71c577229be53cb42fa6428b49115ba639300cffc78bd2b11647fd",
+  "source_size": [1920, 1080],
+  "provenance": "Assistant manually placed visible-body boxes on clean frames, using the user's labeled video as a role reference. Not detector-generated labels. Single-play bootstrap sample; not independently audited or representative of all formations.",
+  "box_policy": "Visible body including helmet and feet; do not infer hidden limbs. Only the seven blue-D priority defenders are annotated per frame; other people remain unscored.",
+  "role_reference": "Labeled set 1.mp4, visually reviewed across snapshots; no automatic coordinate transfer",
+  "frames": [
+    {
+      "index": 0,
+      "review_status": "reviewed",
+      "exhaustive": false,
+      "labels": [
+        {"id": "d_far", "group": "defensive_priority", "bbox": [786, 102, 847, 233]},
+        {"id": "d_left", "group": "defensive_priority", "bbox": [370, 299, 420, 438]},
+        {"id": "d_middle", "group": "defensive_priority", "bbox": [712, 355, 762, 507]},
+        {"id": "d_near_33", "group": "defensive_priority", "bbox": [740, 530, 812, 733]},
+        {"id": "d_near_31", "group": "defensive_priority", "bbox": [826, 526, 889, 694]},
+        {"id": "d_deep", "group": "defensive_priority", "bbox": [468, 704, 530, 880]},
+        {"id": "d_bottom", "group": "defensive_priority", "bbox": [1058, 890, 1121, 1058]}
+      ]
+    },
+    {
+      "index": 136,
+      "review_status": "reviewed",
+      "exhaustive": false,
+      "labels": [
+        {"id": "d_far", "group": "defensive_priority", "bbox": [820, 189, 890, 304]},
+        {"id": "d_left", "group": "defensive_priority", "bbox": [486, 294, 563, 404]},
+        {"id": "d_middle", "group": "defensive_priority", "bbox": [757, 439, 823, 580]},
+        {"id": "d_edge", "group": "defensive_priority", "bbox": [1061, 580, 1155, 713]},
+        {"id": "d_near", "group": "defensive_priority", "bbox": [944, 644, 1013, 790]},
+        {"id": "d_deep", "group": "defensive_priority", "bbox": [469, 708, 560, 841]},
+        {"id": "d_bottom", "group": "defensive_priority", "bbox": [1154, 818, 1240, 961]}
+      ]
+    }
+  ]
+}

@@ -4,6 +4,13 @@ Each meaningful change lists its implementation commit. Follow-up commits that s
 
 ## 2026-10-21
 
+### Reviewed defensive-priority detection evaluation — hash pending
+
+- Added validated clean-frame annotation loading, source-coordinate scaling, one-to-one IoU matching, per-group recall, and precision safeguards for partially labeled frames.
+- Manually reviewed 14 priority-defender boxes across two clean frames, preserving source checksum and annotation provenance; added a runnable evaluation CLI and documented limitations.
+- Files: `src/football_cv/evaluation.py`, `scripts/evaluate_detection.py`, `tests/test_evaluation.py`, `annotations/set_1_priority_sample.json`, `docs/detection-evaluation.md`, `README.md`, `CHANGELOG.md`.
+- Verification: 48 tests passed, 1 optional integration test skipped; both real-video evaluation commands reproduced baseline 13/14 and HD 14/14 reviewed-box matches at confidence .25 / IoU .50. Script compilation and whitespace checks passed. This is a two-frame bootstrap diagnostic, not general accuracy or role recognition.
+
 ### Clean source review and candidate frame preparation — `547fe57`
 
 - Confirmed the user-supplied clean counterpart, decoded all 272 frames, and documented differing lengths and approximate frame correspondence.

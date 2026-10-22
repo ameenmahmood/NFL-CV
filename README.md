@@ -68,6 +68,8 @@ No empty classifier modules are added. Future team identification, field calibra
 
 ## Tests
 
+Reviewed-box evaluation is now available separately from pipeline smoke tests. See [detection evaluation](docs/detection-evaluation.md) for the annotation format, commands, and initial 14-box defensive-priority comparison. It reports localization recall on labeled role groups, not automatic role classification. Partial annotation deliberately disables precision reporting.
+
 ```powershell
 python -m pytest -q
 $env:FOOTBALL_TEST_VIDEO = "C:\Videos\football.mp4"
