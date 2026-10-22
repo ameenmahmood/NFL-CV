@@ -4,7 +4,7 @@ Each meaningful change lists its implementation commit. Follow-up commits that s
 
 ## 2026-10-21
 
-### Reviewed defensive-priority detection evaluation — hash pending
+### Reviewed defensive-priority detection evaluation — `5917992`
 
 - Added validated clean-frame annotation loading, source-coordinate scaling, one-to-one IoU matching, per-group recall, and precision safeguards for partially labeled frames.
 - Manually reviewed 14 priority-defender boxes across two clean frames, preserving source checksum and annotation provenance; added a runnable evaluation CLI and documented limitations.
