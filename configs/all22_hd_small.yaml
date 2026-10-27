@@ -1,0 +1,23 @@
+# Experimental larger model: one extra match on the small set 2 sample.
+# This trades CPU speed for possible recall; it is not a validated general upgrade.
+input_path: data/test.mp4
+output_path: outputs/all22_hd_small_annotated.mp4
+save_output: false
+display: true
+model: yolo11s.pt
+confidence: 0.25
+device: auto
+processing_width: 1920
+imgsz: 1280
+nms_iou: 0.45
+tracking:
+  track_high_thresh: 0.25
+  track_low_thresh: 0.1
+  new_track_thresh: 0.25
+  track_buffer: 30
+  match_thresh: 0.8
+  fuse_score: true
+cuts:
+  enabled: true
+  histogram_threshold: 0.65
+  pixel_threshold: 0.25

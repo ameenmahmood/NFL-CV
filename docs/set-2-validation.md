@@ -35,3 +35,21 @@ Use new output directories for each run:
 Ignored local artifacts: `outputs/set_2_candidates/` (source/reference snapshots and `clean_annotated.mp4`), `outputs/set_2_eval_baseline/`, and `outputs/set_2_eval_hd/` (JSON matches and reviewed-box images). Source SHA-256 in the annotation file prevents evaluation against a different encode.
 
 Verification: 49 tests passed, 1 optional integration test skipped; both real-video evaluation runs completed separately. Both committed annotation samples pass schema checks. Source videos, weights, and outputs remain excluded from Git.
+
+## Follow-up detector comparison
+
+After preserving the initial results, two additional settings were evaluated on the same reviewed boxes:
+
+| Setting | Set 2 matches | Set 1 regression matches |
+|---|---:|---:|
+| Nano HD, NMS .70 | 10/14 | Not rerun |
+| Small HD, NMS .45 | 11/14 | 14/14 |
+
+The larger YOLO11 small model recovered one additional set 2 target overall and retained all set 1 matches. It is available as `configs/all22_hd_small.yaml`, explicitly experimental. The standard nano HD preset remains unchanged because this sample is too small to establish a general quality advantage, false-positive behavior is unmeasured, and the larger model costs more CPU work. Timings collected during concurrent diagnostic runs are not used as a throughput comparison. Increasing nano NMS alone did not solve the overlapping-person failures.
+
+```powershell
+.\.venv\Scripts\python.exe scripts\evaluate_detection.py annotations\set_2_priority_sample.json --video "data\Unlabeled set 2.mp4" --config configs\all22_hd_small.yaml --output outputs\set_2_small_new
+.\.venv\Scripts\python.exe -m football_cv --config configs\all22_hd_small.yaml --input "data\Unlabeled set 2.mp4"
+```
+
+The small model may download trusted Ultralytics weights on first use. Its set 2 evaluation artifacts are under `outputs/set_2_eval_small/`; a final run using the committed preset is under `outputs/set_2_eval_small_preset/`. Set 1 regression artifacts are under `outputs/set_1_eval_small_regression/`. Annotation review and more distinct plays remain necessary before model selection or training decisions.
