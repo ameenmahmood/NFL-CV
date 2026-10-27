@@ -4,6 +4,13 @@ Each meaningful change lists its implementation commit. Follow-up commits that s
 
 ## 2026-10-27
 
+### Overlapping-crop experiment and next tracking annotation input — hash pending
+
+- Added a reproducible crop/full-frame comparison and geometry/duplicate-handling tests; it did not improve reviewed defender recovery, so normal inference remains unchanged.
+- Prepared a clean 300-frame pre/post-snap clip from existing HD footage and documented the persistent identity/role labels needed before further confident tracking validation.
+- Files: `scripts/benchmark_tiling.py`, `tests/test_tiling_benchmark.py`, `docs/tiling-experiment.md`, `docs/tracking.md`, `CHANGELOG.md`. Prepared videos/reports remain ignored artifacts.
+- Verification: 63 tests passed, 1 optional integration test skipped. Full and tiled results both matched 14/14 set 1 and 10/14 set 2 boxes, missing the same four set 2 targets. No production detector or tracking defaults changed.
+
 ### Priority-player tracking continuity audit — `4e0be38`
 
 - Added explicit reviewed identity links for seven set 2 defenders and a sequential audit separating preserved/changed IDs, missing anchors, and scene resets.
