@@ -32,6 +32,8 @@ Do not train on the colored letters themselves. Keep nearby frames from the same
 
 ## Candidate clean-frame preparation
 
+Set 2 is also available: see [set 2 validation](set-2-validation.md) for the 60 FPS clean clip, 30 FPS color-box reference, reviewed priority boxes, and results. The role colors remain the reference mapping; these labels are not automatically predicted roles.
+
 `scripts/prepare_frame_pairs.py` decodes the clean clip and compares six labeled snapshots to grayscale thumbnails from every clean frame. It exports original PNGs, side-by-side review images, and a JSON manifest. Every match is marked `requires_manual_review: true`: the similarity score is an image difference, not a calibrated probability or proof of temporal correspondence. Static field markings can dominate it, and nearby frames differ in player positions. No role or box is transferred automatically.
 
 ```powershell

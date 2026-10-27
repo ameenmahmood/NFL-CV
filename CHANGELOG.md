@@ -2,6 +2,14 @@
 
 Each meaningful change lists its implementation commit. Follow-up commits that synchronize these hashes are available through `git log -- CHANGELOG.md`; they do not reference their own hashes.
 
+## 2026-10-27
+
+### Set 2 priority-defender validation — hash pending
+
+- Reviewed the new color-box reference and 1080p/60 FPS clean video, prepared candidate frame pairs, and manually annotated 14 priority-defender boxes on clean frames.
+- Files: `annotations/set_2_priority_sample.json`, `tests/test_evaluation.py`, `docs/set-2-validation.md`, `docs/labeling-guide.md`, `docs/detection-evaluation.md`, `CHANGELOG.md`.
+- Verification: 49 tests passed, 1 optional integration test skipped. Baseline matched 8/14 boxes and HD 10/14 at confidence .25 / IoU .50. Full HD tracking processed all 446 clean frames; output reopened at original size/rate. Small sample, partial labels, no role-classification or general accuracy claim.
+
 ## 2026-10-21
 
 ### Reviewed defensive-priority detection evaluation — `5917992`

@@ -98,8 +98,10 @@ def test_source_coordinates_restore_each_axis_and_preserve_metadata():
     assert detection.bbox == (1, 2, 10, 20)
 
 
-def test_committed_priority_sample_is_valid():
+@pytest.mark.parametrize('sample', ['set_1_priority_sample.json', 'set_2_priority_sample.json'])
+def test_committed_priority_sample_is_valid(sample):
+    # Each play has two partially labeled frames; never treat them as exhaustive data.
     from pathlib import Path
-    data = load_annotations(Path(__file__).parents[1] / 'annotations' / 'set_1_priority_sample.json')
+    data = load_annotations(Path(__file__).parents[1] / 'annotations' / sample)
     assert sum(len(f['labels']) for f in data['frames']) == 14
     assert all(not f['exhaustive'] for f in data['frames'])

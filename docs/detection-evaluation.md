@@ -21,6 +21,8 @@ The baseline missed the annotated near-line blue-D defender in frame 136 at the 
 
 ## Reproduce
 
+A second reviewed sample is available at `annotations/set_2_priority_sample.json`. See [set 2 findings](set-2-validation.md). It adds 14 priority boxes from another clip and exposes more overlap-related misses; do not generalize the set 1 result to it.
+
 Run from the repository root, using a new output directory each time:
 
 ```powershell
