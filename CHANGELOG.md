@@ -4,6 +4,12 @@ Each meaningful change lists its implementation commit. Follow-up commits that s
 
 ## 2026-10-27
 
+### Verified RTX 4050 acceleration and reproducible device timing — pending
+
+- Replaced the local CPU-only runtime with matched CUDA Torch/Torchvision wheels; added optional pinned installation instructions, startup hardware logging, clearer unavailable-device errors, and a synchronized CPU/GPU benchmark. Preserved detection/tracking settings and CPU fallback.
+- Files: `requirements-cuda.txt`, `src/football_cv/detection.py`, `scripts/benchmark_devices.py`, `tests/test_pipeline.py`, `docs/gpu-setup.md`, `README.md`, `CHANGELOG.md`. Runtime packages, videos, and raw reports remain ignored.
+- Verification: 64 tests passed, 1 optional integration test skipped; dependency check and CUDA tensor/NMS operations passed. Matched warmed HD loop improved from 8.21 to 40.21 FPS; excludes GUI/export. Full GPU run saved/redecoded 446 1080p frames and 446 telemetry records. Reviewed detection matches remained 14/14 set 1 and 10/14 set 2; small partial samples, not general accuracy. GUI interaction was not tested.
+
 ### Overlapping-crop experiment and next tracking annotation input — `ffe96fc`
 
 - Added a reproducible crop/full-frame comparison and geometry/duplicate-handling tests; it did not improve reviewed defender recovery, so normal inference remains unchanged.

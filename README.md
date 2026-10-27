@@ -15,6 +15,8 @@ python -m pip install -e ".[test]"
 
 Activation is optional; use `.\.venv\Scripts\python.exe` in place of `python` if PowerShell blocks the activation script. Python 3.11 is the target; dependency versions are bounded in `pyproject.toml`. Installation may download large PyTorch packages. For NVIDIA acceleration install a matching CUDA-enabled PyTorch build using the [official installer](https://pytorch.org/get-started/locally/) in this environment. `device: auto` selects CUDA device 0 only when PyTorch reports it available, otherwise CPU. An explicitly requested unavailable GPU produces an error.
 
+For this RTX 4050 machine, the optional CUDA runtime is specified in `requirements-cuda.txt`. See [GPU setup and speed checks](docs/gpu-setup.md) for the installation, explicit `--device 0` launch command, and reproducible CPU/GPU comparison. Startup logs name the selected inference hardware so a CPU fallback is visible.
+
 ## Provide a video and run
 
 Use a legally obtained MP4 broadcast or All-22 clip, ideally a short pre-snap wide-angle sequence. Put it in `data/test.mp4` or specify another path. Videos and weights are ignored by Git.
@@ -83,9 +85,11 @@ python -m pytest -q -m integration
 
 Normal tests do not download weights or require a GPU. They test real OpenCV synthetic MP4 encoding/decoding, configuration errors, decode failures, scene changes, and actual ByteTrack recovery/reset using synthetic detections. The integration smoke test runs three frames with supplied local weights and video; it validates API operation, not football detection accuracy. Assess accuracy on labeled football clips separately.
 
-Development verification: 22 tests passed and the optional integration test skipped because no video/weights were supplied. Tested locally on Windows with the available Python 3.12.14 runtime, PyTorch 2.14.1, OpenCV 4.14.0, and Ultralytics 8.4.177. Python 3.11 remains the installation target but was not available for this verification. GUI playback, pretrained inference on football footage, and GPU throughput remain unverified.
+Initial development verification: 22 tests passed and the optional integration test skipped because no video/weights were supplied. Tested locally on Windows with the available Python 3.12.14 runtime, PyTorch 2.14.1, OpenCV 4.14.0, and Ultralytics 8.4.177. Python 3.11 remains the installation target but was not available for this verification. GUI playback, pretrained inference on football footage, and GPU throughput were unverified at that stage.
 
-Subsequent validation used local football footage and pretrained weights, including the new HD file: 32 tests passed on October 16. GUI playback and GPU performance remain unverified. Detector boundary tests check that configured NMS is applied, non-person classes are excluded, and low-confidence candidates remain available to ByteTrack.
+Subsequent validation used local football footage and pretrained weights, including the new HD file: 32 tests passed on October 16. GUI playback and GPU performance were unverified at that stage. Detector boundary tests check that configured NMS is applied, non-person classes are excluded, and low-confidence candidates remain available to ByteTrack.
+
+October 27 GPU validation: 64 tests passed and 1 optional integration test skipped. The RTX 4050 processed the same HD benchmark at 40.2 FPS versus 8.2 FPS on CPU, excluding GUI/export costs. A separate focused GPU tracking run saved all 446 set 2 frames and telemetry; reviewed detection matches remained 14/14 (set 1) and 10/14 (set 2). See [GPU verification and limitations](docs/gpu-setup.md). GUI interaction remains untested in this validation.
 
 For reproducible real-video checks (use a new output directory):
 

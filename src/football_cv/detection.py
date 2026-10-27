@@ -1,6 +1,9 @@
 """Adapt COCO person detections to application records; no team inference here."""
+import logging
 from .config import Config
 from .types import Detection
+
+log = logging.getLogger(__name__)
 
 def resolve_device(request: str) -> str:
     """Auto-fallback to CPU, but fail clearly for an unavailable explicit GPU."""
@@ -14,8 +17,17 @@ def resolve_device(request: str) -> str:
     if not value.isdigit():
         raise ValueError('device must be auto, cpu, an index such as 0, or cuda:0')
     if not torch.cuda.is_available() or int(value) >= torch.cuda.device_count():
-        raise ValueError(f'Requested CUDA device {request} is unavailable; use cpu or auto')
+        build = 'CPU-only PyTorch build' if torch.version.cuda is None else f'PyTorch CUDA {torch.version.cuda}'
+        raise ValueError(f'Requested CUDA device {request} is unavailable ({build}); install a compatible CUDA build or use cpu/auto')
     return value
+
+
+def device_description(device: str) -> str:
+    """Name the actual selected hardware so a CPU fallback is visible at startup."""
+    import torch
+    if device == 'cpu':
+        return f'CPU (PyTorch {torch.__version__}, CUDA build: {torch.version.cuda})'
+    return f'CUDA:{device} {torch.cuda.get_device_name(int(device))} (PyTorch {torch.__version__}, CUDA {torch.version.cuda})'
 
 class PersonDetector:
     """Keep model-specific tensors and class conventions behind one adapter."""
@@ -23,6 +35,7 @@ class PersonDetector:
         from ultralytics import YOLO
         self.config = config
         self.device = resolve_device(config.device)
+        log.info('Inference hardware: %s', device_description(self.device))
         self.model = YOLO(config.model)
         if self.model.task != 'detect' or self.model.names.get(0) != 'person':
             raise ValueError('Model must be a detection model with person at class 0')

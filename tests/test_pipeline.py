@@ -4,7 +4,7 @@ import numpy as np
 import pytest
 from football_cv.app import run
 from football_cv.config import Config
-from football_cv.detection import resolve_device
+from football_cv.detection import resolve_device, device_description
 from football_cv.types import Frame
 from football_cv.performance import PerformanceMeter
 
@@ -20,6 +20,14 @@ def test_device_selection():
         assert resolve_device('cuda:0') == '0'
     with pytest.raises(ValueError, match='device must'):
         resolve_device('bogus')
+
+
+def test_device_description_names_selected_gpu():
+    # Hardware diagnostics remain testable on machines without an actual GPU.
+    with patch('torch.cuda.get_device_name', return_value='Test GPU') as name:
+        assert 'Test GPU' in device_description('0')
+        name.assert_called_once_with(0)
+    assert 'CPU' in device_description('cpu')
 
 def test_headless_pipeline_cleanup():
     # One frame followed by EOF must yield one output write and release both resources.
