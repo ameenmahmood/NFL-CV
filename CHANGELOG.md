@@ -11,7 +11,7 @@ Each meaningful change lists its implementation commit. Follow-up commits that s
 - Files: `src/football_cv/evaluation.py`, `src/football_cv/tracking_metrics.py`, `scripts/audit_tracking.py`, `annotations/set_2_track_links.json`, `tests/test_tracking_metrics.py`, `docs/tracking.md`, `AGENTS.md`, `CHANGELOG.md`.
 - Verification: 51 tests passed, 1 optional integration test skipped. Sparse-anchor real-video results are documented in `docs/tracking.md`; no dense tracking-accuracy claim is made.
 
-### Measured movement histories and reviewed-group focus — hash pending
+### Measured movement histories and reviewed-group focus — `d4ea7a3`
 
 - Added bounded measured-only trails, per-frame JSONL observations in source/normalized-image coordinates, and opt-in priority/skill/QB focus bound at reviewed reference frames.
 - Added source checksum/dimension checks, history expiry, cut resets, gap breaks, explicit manual-role provenance, and exclusive stream creation; retained default person-tracking behavior.
