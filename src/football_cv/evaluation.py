@@ -93,7 +93,8 @@ def score_frame(labels: list[dict], predictions: list[Detection], exhaustive: bo
         if target is not None and overlap >= iou_threshold:
             available.remove(target)
             matches.append({'label_id': labels[target]['id'], 'group': labels[target]['group'],
-                            'iou': overlap, 'prediction': list(prediction.bbox), 'confidence': prediction.confidence})
+                            'iou': overlap, 'prediction': list(prediction.bbox), 'confidence': prediction.confidence,
+                            'track_id': prediction.track_id, 'scene_id': prediction.scene_id})
         else:
             unmatched.append(list(prediction.bbox))
     tp, fn = len(matches), len(available)

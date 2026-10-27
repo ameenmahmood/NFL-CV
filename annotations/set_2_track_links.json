@@ -1,0 +1,15 @@
+{
+  "version": 1,
+  "annotations": "set_2_priority_sample.json",
+  "review": "Assistant visually linked the same seven priority defenders between clean frames 48 and 238, also inspecting intermediate frame 143. Short pre-snap motion only; not independently audited or dense tracking ground truth.",
+  "frames": [48, 238],
+  "person_to_label_id": {
+    "s2_deep": "d_deep",
+    "s2_top": "d_top",
+    "s2_upper_near": "d_upper_near",
+    "s2_middle_upper": "d_middle_upper",
+    "s2_middle_lower": "d_middle_lower",
+    "s2_lower_near": "d_lower_near",
+    "s2_bottom": "d_bottom"
+  }
+}

@@ -4,6 +4,13 @@ Each meaningful change lists its implementation commit. Follow-up commits that s
 
 ## 2026-10-27
 
+### Priority-player tracking continuity audit — hash pending
+
+- Added explicit reviewed identity links for seven set 2 defenders and a sequential audit separating preserved/changed IDs, missing anchors, and scene resets.
+- Recorded defensive/offensive tracking priorities and the distinction between image motion, field coordinates, roles, and future formation/coverage interpretation.
+- Files: `src/football_cv/evaluation.py`, `src/football_cv/tracking_metrics.py`, `scripts/audit_tracking.py`, `annotations/set_2_track_links.json`, `tests/test_tracking_metrics.py`, `docs/tracking.md`, `AGENTS.md`, `CHANGELOG.md`.
+- Verification: 51 tests passed, 1 optional integration test skipped. Sparse-anchor real-video results are documented in `docs/tracking.md`; no dense tracking-accuracy claim is made.
+
 ### Set 2 priority-defender validation — `855679e`
 
 - Reviewed the new color-box reference and 1080p/60 FPS clean video, prepared candidate frame pairs, and manually annotated 14 priority-defender boxes on clean frames.

@@ -24,6 +24,8 @@ Prioritize reliable football person detection/tracking and future normalized fie
 
 Corners, safeties, and linebackers are the main defensive evaluation priority; defensive linemen provide supporting context. Follow `docs/labeling-guide.md` for the user's five color/letter groups. Treat burned-in labels as a role reference, not player bounding boxes or clean detector training/evaluation input.
 
+Tracking continuity and measured movement are the immediate development priority. Offense needs TE alignment/strong-weak-side context, RB, WR, and QB. Existing broad labels do not identify those individual positions automatically. Do not infer coverage, strong/weak side, or field-relative movement from uncalibrated image coordinates. See `docs/tracking.md` for tracking-validation limits.
+
 ## Code comments — required for existing and future code
 
 - Add and maintain relevant comments and docstrings whenever writing or modifying code. Explain component responsibilities, data formats/units, non-obvious logic, assumptions, tradeoffs, and external API contracts.
