@@ -4,7 +4,7 @@ Each meaningful change lists its implementation commit. Follow-up commits that s
 
 ## 2026-10-27
 
-### Overlapping-crop experiment and next tracking annotation input — hash pending
+### Overlapping-crop experiment and next tracking annotation input — `ffe96fc`
 
 - Added a reproducible crop/full-frame comparison and geometry/duplicate-handling tests; it did not improve reviewed defender recovery, so normal inference remains unchanged.
 - Prepared a clean 300-frame pre/post-snap clip from existing HD footage and documented the persistent identity/role labels needed before further confident tracking validation.
