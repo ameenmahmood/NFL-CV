@@ -10,7 +10,7 @@ Each meaningful change lists its implementation commit. Follow-up commits that s
 - Files: `annotations/set_2_priority_sample.json`, `tests/test_evaluation.py`, `docs/set-2-validation.md`, `docs/labeling-guide.md`, `docs/detection-evaluation.md`, `CHANGELOG.md`.
 - Verification: 49 tests passed, 1 optional integration test skipped. Baseline matched 8/14 boxes and HD 10/14 at confidence .25 / IoU .50. Full HD tracking processed all 446 clean frames; output reopened at original size/rate. Small sample, partial labels, no role-classification or general accuracy claim.
 
-### Experimental larger HD detector preset — hash pending
+### Experimental larger HD detector preset — `d5ddb2e`
 
 - Compared larger-model and less-strict NMS settings on set 2; added an optional small-model preset while retaining the nano default.
 - Files: `configs/all22_hd_small.yaml`, `docs/set-2-validation.md`, `README.md`, `CHANGELOG.md`.
