@@ -56,6 +56,9 @@ class Config:
     processing_width: int = 960
     imgsz: int = 640
     nms_iou: float = 0.7
+    show_trails: bool = False
+    track_output: str | None = None
+    focus_annotations: str | None = None
     # Each Config owns its nested settings; instances must not share mutable state.
     tracking: TrackingConfig = field(default_factory=TrackingConfig)
     cuts: CutConfig = field(default_factory=CutConfig)
@@ -71,9 +74,15 @@ class Config:
         for name in ('processing_width', 'imgsz'):
             if type(getattr(self, name)) is not int or getattr(self, name) < 32:
                 raise ValueError(f'{name} must be an integer >= 32')
-        for name in ('save_output', 'display'):
+        for name in ('save_output', 'display', 'show_trails'):
             if type(getattr(self, name)) is not bool:
                 raise ValueError(f'{name} must be boolean')
+        for name in ('track_output', 'focus_annotations'):
+            value = getattr(self, name)
+            if value is not None and (not isinstance(value, str) or not value.strip()):
+                raise ValueError(f'{name} must be a nonempty path or null')
+        if self.track_output and Path(self.track_output).suffix.lower() != '.jsonl':
+            raise ValueError('track_output must have .jsonl extension')
         if self.save_output and Path(self.input_path).resolve() == Path(self.output_path).resolve():
             raise ValueError('Output must not overwrite input')
         if self.save_output and Path(self.output_path).suffix.lower() != '.mp4':

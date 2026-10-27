@@ -21,3 +21,10 @@ def test_bad_yaml(tmp_path, text):
 def test_tracking_thresholds():
     with pytest.raises(ValueError):
         TrackingConfig(track_low_thresh=.5)
+
+
+@pytest.mark.parametrize('kwargs', [{'show_trails': 'yes'}, {'track_output': 'video.mp4'}, {'focus_annotations': ''}])
+def test_invalid_movement_options(kwargs):
+    # Export paths and focus settings must fail before model/video initialization.
+    with pytest.raises(ValueError):
+        Config(**kwargs)

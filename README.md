@@ -43,6 +43,8 @@ First execution of `yolo11n.pt` may download pretrained weights and requires int
 
 Space or **P** pauses/resumes; **Q** or Escape quits; **R** resets tracking identities manually after an unrelated scene. Closing the window quits. Headless mode runs until EOF or Ctrl+C. Display runs at processing speed rather than pacing to source FPS. The rolling processing FPS measures decode, detection, tracking, and scene analysis, excluding annotation, output encoding, display waits, and pauses.
 
+Use `--trails --tracks-output outputs\tracks.jsonl` for measured movement paths and per-frame track exports. Optionally add `--focus-annotations annotations\set_2_priority_sample.json` when processing the matching clean set 2 clip to focus on manually referenced priority defenders. These are reference-bound groups, not automatic position recognition. See [tracking and movement](docs/tracking.md) for commands, audit results, role-binding limits, and why camera motion still requires field calibration.
+
 ## Configuration
 
 `configs/default.yaml` configures input/output, saving, window display, model, display confidence threshold, inference device (`auto`, `cpu`, `0`, `cuda:0`), maximum processing width, inference image size, tracking thresholds/buffer, and cut detection. Paths resolve from the current working directory. Aspect ratio is preserved; boxes and footpoints use processed-frame pixels. Frame records retain source dimensions, zero-based index, and decoder timestamp in seconds. When decoder timestamps are missing or non-monotonic, nominal FPS provides a monotonic fallback.

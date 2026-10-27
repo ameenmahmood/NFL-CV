@@ -4,12 +4,19 @@ Each meaningful change lists its implementation commit. Follow-up commits that s
 
 ## 2026-10-27
 
-### Priority-player tracking continuity audit — hash pending
+### Priority-player tracking continuity audit — `4e0be38`
 
 - Added explicit reviewed identity links for seven set 2 defenders and a sequential audit separating preserved/changed IDs, missing anchors, and scene resets.
 - Recorded defensive/offensive tracking priorities and the distinction between image motion, field coordinates, roles, and future formation/coverage interpretation.
 - Files: `src/football_cv/evaluation.py`, `src/football_cv/tracking_metrics.py`, `scripts/audit_tracking.py`, `annotations/set_2_track_links.json`, `tests/test_tracking_metrics.py`, `docs/tracking.md`, `AGENTS.md`, `CHANGELOG.md`.
 - Verification: 51 tests passed, 1 optional integration test skipped. Sparse-anchor real-video results are documented in `docs/tracking.md`; no dense tracking-accuracy claim is made.
+
+### Measured movement histories and reviewed-group focus — hash pending
+
+- Added bounded measured-only trails, per-frame JSONL observations in source/normalized-image coordinates, and opt-in priority/skill/QB focus bound at reviewed reference frames.
+- Added source checksum/dimension checks, history expiry, cut resets, gap breaks, explicit manual-role provenance, and exclusive stream creation; retained default person-tracking behavior.
+- Files: `src/football_cv/movement.py`, `src/football_cv/app.py`, `src/football_cv/config.py`, `src/football_cv/visualization.py`, `tests/test_movement.py`, `tests/test_config.py`, `tests/test_pipeline.py`, `docs/tracking.md`, `README.md`, `CHANGELOG.md`.
+- Verification: 61 tests passed, 1 optional integration test skipped. Focused set 2 run produced 446 frame records/1,902 measured observations and a verified 1080p/60 FPS overlay. Image paths are not field motion, and reference bindings do not solve unobserved ID swaps or individual position recognition. Details in `docs/tracking.md`.
 
 ### Set 2 priority-defender validation — `855679e`
 

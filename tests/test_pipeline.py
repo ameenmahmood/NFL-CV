@@ -47,3 +47,26 @@ def test_meter():
     assert meter.update(.1) == pytest.approx(10)
     assert meter.update(.3) == pytest.approx(5)
     assert meter.update(.1) == pytest.approx(5)
+
+
+def test_movement_export_pipeline(tmp_path):
+    """Exercise stream output and closure through orchestration without real weights."""
+    import json
+    from football_cv.types import Detection
+    output = tmp_path / 'tracks.jsonl'
+    frame = Frame(0, 0, np.zeros((64, 64, 3), dtype=np.uint8), (64, 64))
+    with patch('football_cv.app.VideoReader') as reader, patch('football_cv.app.PersonDetector') as detector, patch('football_cv.app.PersonTracker') as tracker:
+        reader.return_value.fps = 30
+        reader.return_value.read.side_effect = [frame, None]
+        tracker.return_value.scene_id = 0
+        detector.return_value.detect.return_value = []
+        tracker.return_value.update.return_value = [Detection((10, 10, 20, 30), .9, track_id=1)]
+        assert run(Config(display=False, show_trails=True, track_output=str(output))) == 1
+        reader.return_value.close.assert_called_once()
+    lines = [json.loads(line) for line in output.read_text().splitlines()]
+    assert lines[0]['type'] == 'metadata'
+    assert lines[1]['observations'][0]['footpoint'] == [15, 30]
+    assert lines[1]['observations'][0]['group'] is None
+    # Exclusive output creation must also protect completed telemetry files.
+    with pytest.raises(ValueError, match='already exists'):
+        run(Config(display=False, track_output=str(output)))
