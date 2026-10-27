@@ -4,7 +4,7 @@ Each meaningful change lists its implementation commit. Follow-up commits that s
 
 ## 2026-10-27
 
-### Verified RTX 4050 acceleration and reproducible device timing — pending
+### Verified RTX 4050 acceleration and reproducible device timing — `a865efa`
 
 - Replaced the local CPU-only runtime with matched CUDA Torch/Torchvision wheels; added optional pinned installation instructions, startup hardware logging, clearer unavailable-device errors, and a synchronized CPU/GPU benchmark. Preserved detection/tracking settings and CPU fallback.
 - Files: `requirements-cuda.txt`, `src/football_cv/detection.py`, `scripts/benchmark_devices.py`, `tests/test_pipeline.py`, `docs/gpu-setup.md`, `README.md`, `CHANGELOG.md`. Runtime packages, videos, and raw reports remain ignored.
